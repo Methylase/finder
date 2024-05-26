@@ -8,7 +8,6 @@ if you are using windows /xampp/htdocs/finder
 i.e OPENAI_API_KEY = ,then put the key value in front equal sign
 
 3. Go ahead to use "php artisan serve"  command to start your application
-
 and the application url will be open for testing i.e  http://127.0.0.1:8000
 
 4. Install postman applicaion on your system and signup.
