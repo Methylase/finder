@@ -4,6 +4,9 @@
 2. Linux system using XAMPP Navigate to the project directory on your system terminal or commad prompt i.e cd to the project path /opt/lampp/htdocs/finder
 if you are using windows /xampp/htdocs/finder
 
+4. Include the OpenAI api key in the env file inside the project root folder
+i.e OPENAI_API_KEY = ,then put the key value in front equal sign
+
 3. Go ahead to use "php artisan serve"  command to start your application
 
 and the application url will be open for testing i.e  http://127.0.0.1:8000
