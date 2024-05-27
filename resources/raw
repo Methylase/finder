@@ -1,0 +1,248 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+//use GuzzleHttp\Client;
+
+class FinderController extends Controller
+{
+ /*   public function generateResponse(Request $request)
+    {
+
+        $userInput = $request->input('message');
+        $openAIKey = env('OPENAI_API_KEY');
+
+        $textBasedResponse = "As of the latest available data, the United States has the
+        highest number of billionaires in the world. According to the Forbes
+        Billionaires List, the U.S. consistently tops the list with the most
+        Guidelines
+        Submission Deadline
+        Submissions will be accepted until 11:59 PM on Saturday 25th May, 2024.
+        Resources
+        individuals having a net worth of at least one billion dollars.";
+
+        // Set up cURL options
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => 'https://api.openai.com/v1/chat/completions',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => json_encode([
+                'model' => 'gpt-3.5-turbo-0125',
+                'prompt' => $userInput,
+                'temperature' => 0.5,
+                'max_tokens' => 150,
+                'n' => 1,
+                'stop' => ['\n']
+            ]),
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $openAIKey,
+            ],
+        ]);
+
+        // Execute cURL request
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+            return response()->json(['error' => 'Failed to retrieve response from OpenAI API']);
+        } else {
+            // Extract generated response from OpenAI API
+            $responseData = json_decode($response, true);
+            var_dump($responseData);
+            $generatedResponse = $responseData['choices'][0]['question'];
+
+            // Generate follow-up questions as objects based on user input and generated response
+            $followupQuestions = [
+                [
+                    "question"=> "How many billionaires are there in the United States
+                    compared to other countries?"
+                ],
+                [
+                "question"=> "What industries are most common among billionaires in
+                the United States?"
+                ],
+                [
+                "question"=> "Who is currently the richest billionaire in the world
+                and what is their net worth?"
+                ],
+                [
+                "question"=> "How has the number of billionaires changed over the
+                past decade in the United States?"
+                ]
+            ];
+
+            return response()->json([
+                'response' => $generatedResponse,
+                'text_based_response' => $textBasedResponse,
+                'followup_questions' => $followupQuestions
+            ]);
+        }
+     
+    }
+}/*
+  public function generateResponse(Request $request)
+    {
+            
+        $request->validate([
+            'message' => 'required|string',
+        ]);
+
+
+        $apiKey = env('OPENAI_API_KEY');
+        
+        $url = 'https://api.openai.com/v1/completions';
+    
+        $client = new Client([
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer ' . $apiKey,
+            ]
+        ]);
+
+        $prompt= $request->input('message');
+
+        try {
+            $response = $client->post($url, [
+                'json' => [
+                    'model' => 'text-davinci-002',
+                    'prompt' => $prompt,
+                    'max_tokens' => 150,
+                    'temperature' => 0.7,
+                    'n' => 1,
+                ]
+            ]);
+    
+            $responseData = json_decode($response->getBody(), true);
+            return $responseData['choices'][0]['text'];
+        } catch (Exception $e) {
+            return 'Error: ' . $e->getMessage();
+        }
+    }
+}
+
+
+
+
+public function generate(Request $request)
+{
+    $prompt = $request->input('prompt');
+
+    // Send a request to OpenAI to generate response
+    $client = new Client();
+    $response = $client->post('https://api.openai.com/v1/engines/text-davinci-002/completions', [
+        'headers' => [
+            'Authorization' => 'Bearer YOUR_OPENAI_API_KEY',
+            'Content-Type' => 'application/json',
+        ],
+        'json' => [
+            'prompt' => $prompt,
+            'max_tokens' => 100,
+        ],
+    ]);
+
+    $responseData = json_decode($response->getBody(), true);
+
+    // Extract the generated response
+    $answer = trim($responseData['choices'][0]['text']);
+
+    // Generate follow-up questions
+    $followUpQuestions = $this->generateFollowUpQuestions($answer);
+
+    // Return the response and follow-up questions as JSON
+    return response()->json([
+        'answer' => $answer,
+        'follow_up_questions' => $followUpQuestions,
+    ]);
+}
+
+private function generateFollowUpQuestions($answer)
+{
+    // Here, you can implement your logic to generate follow-up questions based on the answer.
+    // For example, you could use keyword extraction, NLP techniques, or predefined patterns.
+    // This is a simple example, you might need to adjust it based on your requirements.
+    
+    // Split the answer into words
+    $words = explode(' ', $answer);
+
+    // Generate follow-up questions
+    $followUpQuestions = [];
+    for ($i = 0; $i < min(4, count($words)); $i++) {
+        // Construct a follow-up question based on the selected word
+        $question = 'What do you mean by ' . $words[$i] . '?';
+        $followUpQuestions[] = $question;
+    }
+
+    return $followUpQuestions;
+}
+
+}
+
+
+
+
+
+    public function generateResponse(Request $request)
+{
+
+    $openAIKey = env('OPENAI_API_KEY');
+
+    $prompt = $request->input('message');
+
+    // Send a request to OpenAI to generate response
+    $client = new Client();
+    $response = $client->post('https://api.openai.com/v1/chat/completions', 
+    [
+        'headers' => [
+            'Authorization' => 'Bearer '.$openAIKey,
+            'Content-Type' => 'application/json',
+        ],
+        'json' => [
+            'model' => 'gpt-3.5-turbo-0125',
+            'prompt' => $prompt,
+            'max_tokens' => 100,
+        ],
+    ]);
+
+    $responseData = json_decode($response->getBody(), true);
+
+    // Extract the generated response
+    $answer = trim($responseData['choices'][0]['text']);
+
+    // Generate follow-up questions
+    $followUpQuestions = $this->generateFollowUpQuestions($answer);
+
+    // Return the response and follow-up questions as JSON
+    return response()->json([
+        'answer' => $answer,
+        'follow_up_questions' => $followUpQuestions,
+    ]);
+}
+
+private function generateFollowUpQuestions($answer)
+{
+    // Here, you can implement your logic to generate follow-up questions based on the answer.
+    // For example, you could use keyword extraction, NLP techniques, or predefined patterns.
+    // This is a simple example, you might need to adjust it based on your requirements.
+    
+    // Split the answer into words
+    $words = explode(' ', $answer);
+
+    // Generate follow-up questions
+    $followUpQuestions = [];
+    for ($i = 0; $i < min(4, count($words)); $i++) {
+        // Construct a follow-up question based on the selected word
+        $question = 'What do you mean by ' . $words[$i] . '?';
+        $followUpQuestions[] = $question;
+    }
+
+    return $followUpQuestions;
+}
